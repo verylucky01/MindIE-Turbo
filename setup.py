@@ -62,6 +62,9 @@ def load_module_from_path(module_name, path, allowed_dirs=None):
     return module
 
 
+envs = load_module_from_path("env", os.path.join(ROOT_DIR, "mindie_turbo", "env.py"))
+
+
 def get_path(*filepath) -> str:
     """Get the path joined with the project root directory."""
     return os.path.join(ROOT_DIR, *filepath)
