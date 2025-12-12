@@ -15,6 +15,7 @@ import os
 from typing import Optional
 
 from mindie_turbo.adaptor.base_turbo import BaseTurbo, TurboPatch, validate_optimization_level
+from mindie_turbo.utils.logger import logger
 
 DECORATE = "decorate"
 
@@ -101,20 +102,27 @@ def initialize_vllm_turbo() -> Optional[VLLMTurbo]:
         turbo = VLLMTurbo()
         turbo.activate(optimization_level)
         turbo.register_extra_patches()
-
+        
+        logger.info(f"vLLM Turbo activated with optimization level: {optimization_level}")
         return turbo
         
     except ValueError as e:
+        logger.error(f"Failed to initialize vLLM Turbo due to invalid configuration: {e}")
+        logger.warning("Falling back to default optimization level 2")
+        
         # Fallback to default
         try:
             turbo = VLLMTurbo()
             turbo.activate(2)  # Default fallback
             turbo.register_extra_patches()
+            logger.info("vLLM Turbo activated with fallback level: 2")
             return turbo
         except Exception as fallback_error:
+            logger.error(f"Fallback initialization also failed: {fallback_error}")
             return None
             
     except Exception as e:
+        logger.error(f"Failed to initialize vLLM Turbo: {e}")
         return None
 
 
@@ -123,3 +131,5 @@ vllm_turbo = initialize_vllm_turbo()
 
 if vllm_turbo:
     TurboPatch.set_frontend(vllm_turbo)
+else:
+    logger.warning("vLLM Turbo initialization failed. Running without optimizations.")
