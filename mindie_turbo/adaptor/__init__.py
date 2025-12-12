@@ -10,23 +10,7 @@
 # MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
 # See the Mulan PSL v2 for more details.
 
-"""
-MindIE Turbo: An LLM inference acceleration framework featuring extensive plugin collections optimized for 
-NPU devices.
-"""
 __all__ = [
     "vllm_turbo",
 ]
 
-
-import os
-import stat
-from pathlib import Path
-
-from .adaptor import vllm, vllm_turbo
-
-# Determine whether other regular users have write permissions to the directory
-parnet_dir = Path(__file__).parent.absolute()
-
-if (os.stat(parnet_dir).st_mode & stat.S_IWOTH):
-    raise PermissionError(f"Other regular users in the current directory [{parnet_dir}] have write permissions\n")
